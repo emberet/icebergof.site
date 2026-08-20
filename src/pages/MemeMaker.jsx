@@ -10,6 +10,7 @@ import {
   drawMeme,
   loadDisplayFont,
 } from '../lib/drawMeme.js'
+import { X_HANDLE } from '../lib/links.js'
 import useLongPressDrag from '../lib/useLongPressDrag.js'
 import '../styles/buttons.css'
 import './MemeMaker.css'
@@ -127,7 +128,7 @@ export default function MemeMaker() {
       tiers: resolved,
       showBranding,
       sideRail,
-      handle: '@iceberg_off',
+      handle: `@${X_HANDLE}`,
     })
   }, [background, tiers, uploads, showBranding, sideRail, fontReady])
 
@@ -293,7 +294,7 @@ export default function MemeMaker() {
 
   const shareToX = () => {
     const text = 'I made my own ICEBERG 🧊'
-    const url = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&via=iceberg_off`
+    const url = `https://x.com/intent/tweet?text=${encodeURIComponent(text)}&via=${X_HANDLE}`
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
