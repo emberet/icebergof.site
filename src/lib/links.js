@@ -2,10 +2,11 @@
  * Every outbound link in one place, so updating one updates the whole site.
  */
 
-export const BUY_URL =
-  'https://pump.fun/coin/ELGoiPVqiueZnqsaCRp8abdnoQGmMU9j7PWYc8U1pump'
+export const CONTRACT_ADDRESS = 'ELGoiPVqiueZnqsaCRp8abdnoQGmMU9j7PWYc8U1pump'
 
-export const X_HANDLE = 'iceberg_off'
+export const BUY_URL = `https://pump.fun/coin/${CONTRACT_ADDRESS}`
+
+export const X_HANDLE = 'iceberg_of'
 export const X_URL = `https://x.com/${X_HANDLE}`
 
 export const ORIGIN_URL = 'https://knowyourmeme.com/memes/iceberg-charts'

@@ -4,7 +4,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
   min-height: 3.5rem;
   padding: 0.5rem 1rem;
   background: #000;
@@ -95,44 +96,30 @@
   fill: currentColor;
 }
 
-.footer-buy {
-  display: inline-flex;
-  align-items: center;
-  flex-shrink: 0;
-  min-height: 2.75rem;
-  padding: 0.5em 1em 0.35em;
-  border: 2px solid var(--ink);
-  border-radius: 999px;
-  background: #ffd93d;
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  line-height: 1.3;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: transform 0.15s ease, background 0.15s ease;
+.footer-ca {
+  color: rgb(242 251 255 / 80%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  /* One tap/click selects the whole address for copying. */
+  user-select: all;
+  -webkit-user-select: all;
 }
 
-.footer-buy:hover {
-  transform: translateY(-2px);
-  background: #ffe470;
-}
-
-.footer-buy:focus-visible {
-  outline: 3px solid #f2fbff;
-  outline-offset: 2px;
-}
-
-/* Narrow screens: drop the handle text so all three controls keep a
-   44px tap target instead of compressing each other. */
-@media (width <= 480px) {
-  .social-handle {
-    display: none;
+@media (width <= 760px) {
+  .social-link {
+    order: 1;
   }
 
-  .social-link {
-    min-width: 2.75rem;
-    padding: 0;
+  .sound-button {
+    order: 2;
+  }
+
+  .footer-ca {
+    order: 3;
+    flex-basis: 100%;
+    text-align: center;
   }
 }

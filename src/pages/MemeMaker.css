@@ -1,7 +1,9 @@
 .maker {
   position: relative;
   min-height: 100svh;
-  padding-bottom: 4.5rem;
+  /* Must clear the footer, which wraps to two rows on narrow screens once it
+     carries the contract address. */
+  padding-bottom: 7.5rem;
   background:
     linear-gradient(rgb(1 21 43 / 78%), rgb(1 21 43 / 88%)),
     url("../assets/iceberg.jpg") center / cover no-repeat fixed;

@@ -1,4 +1,4 @@
-import { BUY_URL, EXTERNAL_LINK, X_HANDLE, X_URL } from '../lib/links.js'
+import { CONTRACT_ADDRESS, EXTERNAL_LINK, X_HANDLE, X_URL } from '../lib/links.js'
 import { useSound } from './SoundProvider.jsx'
 import './Footer.css'
 
@@ -24,9 +24,7 @@ export default function Footer() {
         <span className="social-handle">@{X_HANDLE}</span>
       </a>
 
-      <a className="footer-buy" href={BUY_URL} {...EXTERNAL_LINK}>
-        Buy now
-      </a>
+      <span className="footer-ca">ca- {CONTRACT_ADDRESS}</span>
 
       {sound && (
         <button
