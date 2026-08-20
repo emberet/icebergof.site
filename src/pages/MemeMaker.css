@@ -1,0 +1,543 @@
+.maker {
+  position: relative;
+  min-height: 100svh;
+  padding-bottom: 4.5rem;
+  background:
+    linear-gradient(rgb(1 21 43 / 78%), rgb(1 21 43 / 88%)),
+    url("../assets/iceberg.jpg") center / cover no-repeat fixed;
+}
+
+.maker-body {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 7rem clamp(1rem, 4vw, 3rem) 3rem;
+}
+
+.maker-title {
+  margin: 0 0 1.5rem;
+  color: #f2fbff;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.maker-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+.maker-preview {
+  position: sticky;
+  top: 6rem;
+}
+
+.maker-zones {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.25rem;
+  overflow: hidden;
+}
+
+.maker-zone-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.maker-zone {
+  flex-basis: 0;
+  min-width: 0;
+  min-height: 0;
+  /* Buttons ship with default padding, which skews the flex ratio and drifts
+     the band/rail seam away from where the canvas actually splits. */
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #f2fbff;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: copy;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.maker-zone:disabled {
+  cursor: not-allowed;
+}
+
+/* Every eligible tier breathes while something is being carried. */
+@keyframes zone-breathe {
+  0%,
+  100% {
+    box-shadow: inset 0 0 0 3px rgb(78 226 251 / 45%);
+    background: rgb(78 226 251 / 6%);
+  }
+  50% {
+    box-shadow: inset 0 0 0 6px rgb(78 226 251 / 95%);
+    background: rgb(78 226 251 / 16%);
+  }
+}
+
+/* The one under the finger locks to a solid outline. */
+@keyframes zone-lock {
+  from {
+    transform: scale(0.985);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.maker-zones.is-placing .maker-zone:not(:disabled) {
+  animation: zone-breathe 1.3s ease-in-out infinite;
+}
+
+.maker-zones.is-placing .maker-zone:not(:disabled):hover {
+  background: rgb(78 226 251 / 25%);
+}
+
+.maker-zone.is-over,
+.maker-zones.is-placing .maker-zone.is-over:not(:disabled) {
+  animation: zone-lock 0.16s ease-out;
+  background: rgb(78 226 251 / 34%);
+  box-shadow: inset 0 0 0 6px #4ee2fb;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .maker-zones.is-placing .maker-zone:not(:disabled),
+  .maker-zone.is-over {
+    animation: none;
+  }
+
+  .maker-zones.is-placing .maker-zone:not(:disabled) {
+    box-shadow: inset 0 0 0 4px rgb(78 226 251 / 70%);
+  }
+}
+
+/* Preview that rides along under the finger. */
+.drag-ghost {
+  position: fixed;
+  z-index: 40;
+  width: 5rem;
+  height: 5rem;
+  margin: -2.5rem 0 0 -2.5rem;
+  border: 4px solid var(--ink);
+  border-radius: 0.9rem;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.92;
+  transform: rotate(-4deg);
+  box-shadow: 0 10px 24px rgb(1 21 43 / 55%);
+}
+
+.drag-ghost img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.maker-zone-hint {
+  display: inline-block;
+  max-width: 92%;
+  padding: 0.25em 0.6em;
+  border-radius: 999px;
+  background: rgb(1 21 43 / 82%);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Rail zones read as a distinct column target. */
+.maker-zone--rail {
+  box-shadow: inset 1px 0 0 rgb(242 251 255 / 20%);
+}
+
+.maker-zones.is-placing .maker-zone--rail:not(:disabled) {
+  animation-delay: 0.15s;
+}
+
+.maker-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 4px solid var(--ink);
+  border-radius: 1.25rem;
+  background: var(--ink);
+  box-shadow: 0 10px 0 var(--ink), 0 20px 34px rgb(1 21 43 / 45%);
+}
+
+.maker-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.maker-drop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 6.5rem;
+  padding: 1rem;
+  border: 4px dashed rgb(242 251 255 / 55%);
+  border-radius: 1.25rem;
+  background: rgb(1 21 43 / 55%);
+  color: #f2fbff;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.maker-drop:hover {
+  border-color: #4ee2fb;
+  background: rgb(1 21 43 / 75%);
+}
+
+.maker-drop:focus-within {
+  outline: 3px solid #f2fbff;
+  outline-offset: 3px;
+}
+
+.maker-drop-main {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.maker-drop-sub {
+  color: rgb(242 251 255 / 65%);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.maker-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.maker-error {
+  margin: 0;
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.75rem;
+  background: #ffd93d;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.maker-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 1rem;
+  border: 3px solid rgb(242 251 255 / 35%);
+  border-radius: 1.25rem;
+  background: rgb(1 21 43 / 55%);
+}
+
+.maker-tiers legend {
+  padding: 0 0.5rem;
+  color: #4ee2fb;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.maker-subhead {
+  margin: 0 0 0.6rem;
+  color: #4ee2fb;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.maker-gallery {
+  padding: 1rem;
+  border: 3px solid rgb(242 251 255 / 35%);
+  border-radius: 1.25rem;
+  background: rgb(1 21 43 / 55%);
+}
+
+.maker-empty {
+  margin: 0;
+  color: rgb(242 251 255 / 65%);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.maker-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.maker-thumbs li {
+  position: relative;
+}
+
+.maker-thumb {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 3px solid rgb(242 251 255 / 40%);
+  border-radius: 0.8rem;
+  background: rgb(1 21 43 / 60%);
+  cursor: grab;
+  overflow: hidden;
+  /* Long-press drag needs the gesture; without this the browser claims it
+     for scrolling and the drag never starts. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  transition: border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+
+.maker-thumb.is-dragging {
+  border-color: #4ee2fb;
+  opacity: 0.4;
+}
+
+.maker-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.maker-thumb:hover {
+  border-color: #4ee2fb;
+  transform: translateY(-2px);
+}
+
+.maker-thumb.is-picked {
+  border-color: #ffd93d;
+  box-shadow: 0 0 0 3px rgb(255 217 61 / 45%);
+}
+
+.maker-thumb:active {
+  cursor: grabbing;
+}
+
+.maker-thumb-remove {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--ink);
+  border-radius: 999px;
+  background: #ffd93d;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.maker-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.maker-tier-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.maker-gallery-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.maker-clear-tier {
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  border: 2px solid rgb(242 251 255 / 30%);
+  border-radius: 0.6rem;
+  background: transparent;
+  color: rgb(242 251 255 / 75%);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.maker-clear-tier:hover {
+  border-color: #ffd93d;
+  color: #ffd93d;
+}
+
+.maker-clear-tier:focus-visible {
+  outline: 3px solid #4ee2fb;
+  outline-offset: 2px;
+}
+
+.maker-tier-placed {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-left: 0.2rem;
+}
+
+.maker-tier-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0 0 0.2rem;
+  list-style: none;
+}
+
+/* The side-column pick is tagged so it is not mistaken for a tier image. */
+.maker-tier-items li.is-rail img {
+  border-color: #4ee2fb;
+}
+
+.maker-rail-tag {
+  position: absolute;
+  bottom: -0.15rem;
+  left: -0.15rem;
+  padding: 0 0.25rem;
+  border-radius: 0.3rem;
+  background: #4ee2fb;
+  color: var(--ink);
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.maker-tier-items li {
+  position: relative;
+}
+
+.maker-tier-items img {
+  display: block;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 2px solid rgb(242 251 255 / 40%);
+  border-radius: 0.5rem;
+  object-fit: cover;
+}
+
+.maker-tier-items button {
+  position: absolute;
+  top: -0.3rem;
+  right: -0.3rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: #ffd93d;
+  color: var(--ink);
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.maker-tier input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.8rem;
+  border: 2px solid rgb(242 251 255 / 35%);
+  border-radius: 0.7rem;
+  background: rgb(242 251 255 / 10%);
+  color: #f2fbff;
+  font: inherit;
+}
+
+.maker-tier input:focus-visible {
+  outline: 3px solid #4ee2fb;
+  outline-offset: 1px;
+}
+
+.maker-remove {
+  width: 2.5rem;
+  border: 2px solid rgb(242 251 255 / 35%);
+  border-radius: 0.7rem;
+  background: transparent;
+  color: #f2fbff;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.maker-remove:hover:not(:disabled) {
+  border-color: #ffd93d;
+  color: #ffd93d;
+}
+
+.maker-remove:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.maker-toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.maker-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #f2fbff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.maker-toggle input {
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: #4ee2fb;
+}
+
+.maker-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+}
+
+.maker-hint {
+  margin: 0;
+  color: rgb(242 251 255 / 70%);
+  font-size: 0.85rem;
+}
+
+@media (width <= 820px) {
+  .maker-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Must stay a positioning context: .maker-zones is inset:0 against it, and
+     going static made the zones anchor to .maker and blanket the whole page,
+     swallowing every tap on the controls below. */
+  .maker-preview {
+    position: relative;
+    top: auto;
+  }
+}

@@ -1,0 +1,25 @@
+@import "@fontsource/luckiest-guy/latin-400.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #01152b;
+  color: #f2fbff;
+}
+
+:root {
+  --ink: #01152b;
+  --font-display: "Luckiest Guy", system-ui, sans-serif;
+}

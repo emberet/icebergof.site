@@ -1,0 +1,10 @@
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  width: min(24rem, 86vw);
+}
+
+.nav-menu .btn {
+  width: 100%;
+}
